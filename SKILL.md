@@ -1,8 +1,6 @@
 ---
 name: pdf-converter
 description: "PDF converter powered by MinerU — convert PDF to Word, Markdown, HTML, LaTeX, or plain text. Also handles image-to-text OCR, scanned document recognition, and Office formats (DOCX, PPTX, Excel). Supports 80+ languages. Use this skill when the user wants to convert, extract, read, parse, or summarize any PDF or document. Also applies when the user shares a PDF file or link and asks about its content, needs tables or formulas extracted, wants PDF OCR, or says things like 'turn this into a doc' or 'what does this paper say'."
-homepage: https://mineru.net
-metadata: {"openclaw":{"emoji":"📄","requires":{"bins":["mineru-open-api"]},"install":[{"id":"npm","kind":"node","package":"mineru-open-api","bins":["mineru-open-api"],"label":"Install via npm"},{"id":"uv","kind":"uv","package":"mineru-open-api","bins":["mineru-open-api"],"label":"Install via uv"},{"id":"go","kind":"go","package":"github.com/opendatalab/MinerU-Ecosystem/cli/mineru-open-api","bins":["mineru-open-api"],"label":"Install via go install","os":["darwin","linux"]}]}}
 ---
 
 # Document to Markdown
@@ -106,7 +104,11 @@ Both commands send the document to MinerU's API (mineru.net) for processing. Thi
 ## Troubleshooting
 
 - **Debug API requests:** Add `-v` flag to see HTTP request/response details (e.g., `mineru-open-api flash-extract report.pdf -v`)
-- **CLI not found:** Install via `npm i -g mineru-open-api`, `uv tool install mineru-open-api`, or download from https://mineru.net/ecosystem?tab=cli
+- **CLI not found:** Install via one of:
+  - `npm i -g mineru-open-api` (Node.js)
+  - `uv tool install mineru-open-api` (Python/uv)
+  - macOS/Linux: `curl -fsSL https://cdn-mineru.openxlab.org.cn/open-api-cli/install.sh | sh`
+  - Windows: `irm https://cdn-mineru.openxlab.org.cn/open-api-cli/install.ps1 | iex`
 - **Auth error on extract:** Run `mineru-open-api auth` to set up your token
 - **Timeout on large files:** Increase with `--timeout 600` (seconds)
 - **Wrong language output:** Set `--language` explicitly (e.g., `--language en` for English docs)
