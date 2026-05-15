@@ -28,6 +28,29 @@ For example:
 - "这篇论文讲了什么" → stdout is fine, read the output directly and summarize
 - "把PDF里的参考文献整理出来" → stdout or `-o`, then parse the references section
 
+### Page Range Extraction Rule
+
+When `--pages` is used with `-o` pointing to a **directory**, the CLI derives the output filename solely from the input file name. This means multiple page-range extracts of the same file will overwrite each other.
+
+**CRITICAL**: You MUST avoid this by converting the output path to an **explicit file path** that includes the page range.
+
+```bash
+# ❌ WRONG — same file overwrites itself
+mineru-open-api flash-extract report.pdf --pages 1-20  -o ./out/
+mineru-open-api flash-extract report.pdf --pages 21-40 -o ./out/
+
+# ✅ CORRECT — unique filenames per chunk
+mineru-open-api flash-extract report.pdf --pages 1-20  -o ./out/report_p1-20.md
+mineru-open-api flash-extract report.pdf --pages 21-40 -o ./out/report_p21-40.md
+```
+
+Whenever the user asks to split a document by page ranges (e.g., "extract pages 1-20", "split into chunks"), always generate `-o` as an exact file path with the `_p{range}` suffix.
+
+| User says | You generate |
+|---|---|
+| "把 report.pdf 每20页拆分成多个文件" | `-o ./out/report_p1-20.md`, `-o ./out/report_p21-40.md`... |
+| "extract pages 1-10 and 11-20" | `-o ./out/report_p1-10.md`, `-o ./out/report_p11-20.md` |
+
 ## Two Extraction Modes
 
 ### flash-extract — Fast, no auth
@@ -37,7 +60,7 @@ Best for quick reads. No API key, no setup.
 ```bash
 mineru-open-api flash-extract report.pdf                               # to stdout (for immediate consumption)
 mineru-open-api flash-extract report.pdf -o ./output/                  # save to file
-mineru-open-api flash-extract report.pdf -o ./output/ --pages 1-10     # page range
+mineru-open-api flash-extract report.pdf -o ./output/report_p1-10.md   # page range (explicit file path)
 mineru-open-api flash-extract report.pdf -o ./output/ --language en    # language hint
 mineru-open-api flash-extract https://example.com/paper.pdf            # URL input
 ```
@@ -56,6 +79,7 @@ Use when the user needs full-fidelity output: preserved images, accurate tables,
 mineru-open-api extract report.pdf                              # to stdout
 mineru-open-api extract report.pdf -o ./out/                    # save with all assets
 mineru-open-api extract report.pdf -o ./out/ -f md,docx         # multiple output formats
+mineru-open-api extract report.pdf -o ./out/report_p1-20.md --pages 1-20  # page range (explicit file path)
 mineru-open-api extract report.pdf -o ./out/ --ocr          # force OCR for scanned docs
 mineru-open-api extract *.pdf -o ./results/                 # batch processing
 mineru-open-api extract --list files.txt -o ./results/      # batch from file list
